@@ -3,7 +3,7 @@
 // Total hours wasted here -> 12
 // ^ Do Not Remove This!
 
-var version = "`PROJECT AKARIN VERSION 20160305`";
+var version = "`PROJECT AKARIN VERSION 20160305+`";
 
 'use strict';
 
@@ -213,7 +213,7 @@ tg.on('message', function(msg) {
     console.log(printf('From ID %1  --  %2', msg.chat.id, msg.text));
 
     // enforce group chat
-    if (msg.chat.id != config.tg_group_id) return;
+//    if (msg.chat.id != config.tg_group_id) return;
 
     if(config.irc_photo_forwarding_enabled && msg.photo){
         var largest = {file_size: 0};
@@ -365,6 +365,15 @@ tg.on('message', function(msg) {
             me_message = true;
             msg.text = msg.text.substring(command[0].length);
             // passthrough to allow /me action
+        } else if (command[0] == '/bug' || command[0] == '/bug@' + tgusername) {
+            var debian_bugid = command[1];
+            if (debian_bugid.length >= 2 && isNaN(debian_bugid) === false) {
+                var send_url =  "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=" + debian_bugid;
+                msg.text = send_url;
+                tg.sendMessage(msg.chat.id, send_url);
+            } else {
+                return;
+            }
         } else {
             return;
         }
